@@ -155,7 +155,7 @@ $slider_has_loop = count($slider_slides) > 1;
                 <?php endif; ?>
 
                 <div class="hram-hero__actions">
-                  <a class="hram-button" href="#" role="button"><?= esc_html__('Читать житие', 'bootscore'); ?></a>
+                  <a class="hram-button" href="#" role="button"><?= esc_html__('История строительства храма', 'bootscore'); ?></a>
                   <a class="hram-button" href="#" role="button"><?= esc_html__('Смотреть видео', 'bootscore'); ?></a>
                 </div>
               </div>
