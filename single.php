@@ -3,78 +3,87 @@
  * Template Post Type: post
  *
  * @package Bootscore
- * @version 6.1.0
  */
 
-// Exit if accessed directly
+// Exit if accessed directly.
 defined('ABSPATH') || exit;
 
 get_header();
 ?>
 
-  <div id="content" class="site-content <?= apply_filters('bootscore/class/container', 'container', 'single'); ?> <?= apply_filters('bootscore/class/content/spacer', 'pt-3 pb-5', 'single'); ?>">
+  <div id="content" class="site-content site-content--single">
     <div id="primary" class="content-area">
-      
-      <?php do_action( 'bootscore_after_primary_open', 'single' ); ?>
+
+      <?php do_action('bootscore_after_primary_open', 'single'); ?>
 
       <?php the_breadcrumb(); ?>
 
-      <div class="row">
-        <div class="<?= apply_filters('bootscore/class/main/col', 'col'); ?>">
+      <main id="main" class="site-main single-page">
+        <?php if (have_posts()) : ?>
+          <?php while (have_posts()) : the_post(); ?>
+            <?php
+            $current_post_id = get_the_ID();
+            $category_ids    = wp_get_post_categories($current_post_id);
 
-          <main id="main" class="site-main">
+            $slider_query_args = [
+              'post_type'           => 'post',
+              'posts_per_page'      => 6,
+              'ignore_sticky_posts' => true,
+              'post__not_in'        => [$current_post_id],
+              'no_found_rows'       => true,
+            ];
 
-            <div class="entry-header">
-              <?php the_post(); ?>
-              <?php bootscore_category_badge(); ?>
-              <?php do_action( 'bootscore_before_title', 'single' ); ?>
-              <?php the_title('<h1 class="entry-title ' . apply_filters('bootscore/class/entry/title', '', 'single') . '">', '</h1>'); ?>
-              <?php do_action( 'bootscore_after_title', 'single' ); ?>
-              <p class="entry-meta">
-                <small class="text-body-secondary">
+            if (!empty($category_ids)) {
+              $slider_query_args['category__in'] = $category_ids;
+            }
+
+            $slider_query      = new WP_Query($slider_query_args);
+            $has_slider_posts  = $slider_query->have_posts();
+            ?>
+
+            <div class="single-page__layout">
+              <article id="post-<?php the_ID(); ?>" <?php post_class('single-article'); ?>>
+                <header class="single-article__header">
+                  <?php bootscore_category_badge(); ?>
+
+                  <h1 class="single-article__title"><?= esc_html(get_the_title()); ?></h1>
+
+                  <div class="single-article__meta">
+                    <span class="single-article__meta-item">
+                      <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                      <time datetime="<?= esc_attr(get_the_date('c')); ?>"><?= esc_html(get_the_date('d.m.Y')); ?></time>
+                    </span>
+                  </div>
+
+                  <?php bootscore_post_thumbnail(); ?>
+                </header>
+
+                <div class="single-article__content">
+                  <?php the_content(); ?>
+                </div>
+
+                <footer class="single-article__footer">
+                  <?php bootscore_tags(); ?>
+                </footer>
+              </article>
+
+              <?php if ($has_slider_posts) : ?>
+                <aside class="single-page__sidebar">
                   <?php
-                  bootscore_date();
-                  bootscore_author();
-                  bootscore_comment_count();
+                  $slider_query->rewind_posts();
+                  get_template_part('template-parts/components/news-slider', null, [
+                    'query'    => $slider_query,
+                    'modifier' => 'single',
+                    'autoplay' => 5000,
+                  ]);
                   ?>
-                </small>
-              </p>
-              <?php bootscore_post_thumbnail(); ?>
+                </aside>
+                <?php wp_reset_postdata(); ?>
+              <?php endif; ?>
             </div>
-            
-            <?php do_action( 'bootscore_after_featured_image', 'single' ); ?>
-
-            <div class="entry-content">
-              <?php the_content(); ?>
-            </div>
-            
-            <?php do_action( 'bootscore_before_entry_footer', 'single' ); ?>
-
-            <div class="entry-footer clear-both">
-              <div class="mb-4">
-                <?php bootscore_tags(); ?>
-              </div>
-              <!-- Related posts using bS Swiper plugin -->
-              <?php if (function_exists('bootscore_related_posts')) bootscore_related_posts(); ?>
-              <nav aria-label="bs page navigation">
-                <ul class="pagination justify-content-center">
-                  <li class="page-item">
-                    <?php previous_post_link('%link'); ?>
-                  </li>
-                  <li class="page-item">
-                    <?php next_post_link('%link'); ?>
-                  </li>
-                </ul>
-              </nav>
-              <?php comments_template(); ?>
-            </div>
-
-          </main>
-
-        </div>
-        <?php get_sidebar(); ?>
-      </div>
-
+          <?php endwhile; ?>
+        <?php endif; ?>
+      </main>
     </div>
   </div>
 

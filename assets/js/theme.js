@@ -37,4 +37,210 @@ jQuery(function ($) {
   $('.height-85').css('height', 0.85 * $(window).height());
   $('.height-100').css('height', 1.0 * $(window).height());
 
+  const heroSliderElement = document.querySelector('.hram-hero-slider__swiper');
+
+  if (heroSliderElement && typeof Swiper !== 'undefined') {
+    const sliderLoop = heroSliderElement.dataset.sliderLoop === 'true';
+    const autoplayDelay = parseInt(heroSliderElement.dataset.sliderAutoplay || '0', 10);
+
+    const sliderOptions = {
+      loop: sliderLoop,
+      speed: 1400,
+      parallax: true,
+      watchSlidesProgress: true,
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      },
+      allowTouchMove: sliderLoop,
+      grabCursor: sliderLoop,
+      autoplay: autoplayDelay > 0 ? {
+        delay: autoplayDelay,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      } : false
+    };
+
+    const heroSlider = new Swiper(heroSliderElement, sliderOptions);
+
+    if (!sliderLoop) {
+      heroSlider.allowTouchMove = false;
+    }
+
+    const sliderSection = heroSliderElement.closest('.hram-hero-slider');
+
+    if (sliderSection) {
+      const parallaxNodes = sliderSection.querySelectorAll('[data-parallax-scroll]');
+
+      if (parallaxNodes.length) {
+        let rafId = null;
+
+        const updateParallax = () => {
+          const rect = sliderSection.getBoundingClientRect();
+          const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+          const progress = Math.min(Math.max((viewportHeight - rect.top) / (viewportHeight + rect.height), 0), 1);
+
+          parallaxNodes.forEach((node) => {
+            const intensity = parseFloat(node.getAttribute('data-parallax-scroll')) || 18;
+            node.style.transform = `translate3d(0, ${-progress * intensity}px, 0)`;
+          });
+        };
+
+        const requestParallax = () => {
+          if (rafId !== null) {
+            return;
+          }
+
+          rafId = window.requestAnimationFrame(() => {
+            rafId = null;
+            updateParallax();
+          });
+        };
+
+        updateParallax();
+
+        window.addEventListener('scroll', requestParallax, { passive: true });
+        window.addEventListener('resize', requestParallax);
+      }
+    }
+  }
+
+  const logoTitleElement = document.querySelector('.logo-title');
+
+  if (logoTitleElement && typeof gsap !== 'undefined' && typeof TextPlugin !== 'undefined') {
+    gsap.registerPlugin(TextPlugin);
+
+    const finalText = logoTitleElement.textContent.trim();
+
+    if (finalText.length) {
+      gsap.set(logoTitleElement, { opacity: 0 });
+      logoTitleElement.textContent = '';
+
+      const timeline = gsap.timeline({ delay: 0.4 });
+
+      timeline.to(logoTitleElement, {
+        opacity: 1,
+        duration: 0.6,
+        ease: 'power1.out'
+      }, 0);
+
+      timeline.to(logoTitleElement, {
+        text: finalText,
+        duration: 2.8,
+        ease: 'power1.out'
+      }, 0);
+    }
+  }
+
+  const announcementsSliderElement = document.querySelector('[data-announcements-slider]');
+
+  if (announcementsSliderElement && typeof Swiper !== 'undefined') {
+    const announcementsWrapper = announcementsSliderElement.closest('[data-announcements]');
+    const prevButton = announcementsWrapper ? announcementsWrapper.querySelector('[data-announcements-prev]') : null;
+    const nextButton = announcementsWrapper ? announcementsWrapper.querySelector('[data-announcements-next]') : null;
+    const loopSlides = announcementsSliderElement.dataset.sliderLoop === 'true';
+    const autoplayDelay = parseInt(announcementsSliderElement.dataset.sliderAutoplay, 10);
+    const hasMultipleSlides = announcementsSliderElement.querySelectorAll('.swiper-slide').length > 1;
+    const shouldAutoplay = !Number.isNaN(autoplayDelay) && autoplayDelay > 0 && hasMultipleSlides;
+
+    const sliderOptions = {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      autoHeight: true,
+      loop: loopSlides,
+      navigation: {
+        prevEl: prevButton,
+        nextEl: nextButton
+      }
+    };
+
+    if (shouldAutoplay) {
+      sliderOptions.autoplay = {
+        delay: autoplayDelay,
+        disableOnInteraction: false
+      };
+    }
+
+    const announcementsSlider = new Swiper(announcementsSliderElement, sliderOptions);
+
+    const updateNavigationState = () => {
+      if (!prevButton || !nextButton || loopSlides) {
+        return;
+      }
+
+      if (announcementsSlider.slides.length <= 1) {
+        prevButton.setAttribute('disabled', 'disabled');
+        nextButton.setAttribute('disabled', 'disabled');
+        return;
+      }
+
+      if (announcementsSlider.isBeginning) {
+        prevButton.setAttribute('disabled', 'disabled');
+      } else {
+        prevButton.removeAttribute('disabled');
+      }
+
+      if (announcementsSlider.isEnd) {
+        nextButton.setAttribute('disabled', 'disabled');
+      } else {
+        nextButton.removeAttribute('disabled');
+      }
+    };
+
+    const syncAnnouncementTitleHeights = () => {
+      if (!announcementsWrapper) {
+        return;
+      }
+
+      const titles = announcementsWrapper.querySelectorAll('.front-announcements__slide-title');
+
+      if (!titles.length) {
+        return;
+      }
+
+      let maxHeight = 0;
+
+      titles.forEach((title) => {
+        title.style.minHeight = '';
+        maxHeight = Math.max(maxHeight, title.offsetHeight);
+      });
+
+      titles.forEach((title) => {
+        title.style.minHeight = `${maxHeight}px`;
+      });
+    };
+
+    announcementsSlider.on('slideChange', () => {
+      updateNavigationState();
+      window.requestAnimationFrame(syncAnnouncementTitleHeights);
+    });
+
+    announcementsSlider.on('resize', () => {
+      updateNavigationState();
+      window.requestAnimationFrame(syncAnnouncementTitleHeights);
+    });
+
+    window.addEventListener('resize', () => {
+      window.requestAnimationFrame(syncAnnouncementTitleHeights);
+    });
+
+    if (announcementsWrapper) {
+      const announcementImages = announcementsWrapper.querySelectorAll('.front-announcements__image');
+
+      announcementImages.forEach((image) => {
+        if (image.complete) {
+          return;
+        }
+
+        image.addEventListener('load', () => {
+          window.requestAnimationFrame(syncAnnouncementTitleHeights);
+        });
+      });
+    }
+
+    // Ensure initial state is applied when Swiper initialises immediately
+    updateNavigationState();
+    window.requestAnimationFrame(syncAnnouncementTitleHeights);
+  }
+
 }); // jQuery End

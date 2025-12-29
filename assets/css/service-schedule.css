@@ -1,0 +1,293 @@
+:root {
+  --service-schedule-bg: rgba(248, 237, 218, 0.94);
+  --service-schedule-border: rgba(217, 184, 142, 0.55);
+  --service-schedule-primary: #3b2715;
+  --service-schedule-secondary: rgba(59, 39, 21, 0.68);
+  --service-schedule-shadow: rgba(59, 39, 21, 0.14);
+}
+
+.service-schedule {
+  font-family: 'Manrope', 'Inter', 'Segoe UI', sans-serif;
+  color: var(--service-schedule-primary);
+  padding: clamp(1.5rem, 3vw, 2.5rem) 0;
+  background: none;
+}
+
+.service-schedule__inner {
+  width: min(100%, 1320px);
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2rem);
+  position: relative;
+}
+
+.service-schedule__swiper {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+.service-schedule__swiper .swiper-wrapper {
+  padding-bottom: 0.5rem;
+}
+
+.service-schedule__swiper .swiper-slide {
+  height: auto;
+  display: flex;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+
+.service-schedule__swiper .swiper-slide-active {
+  transform: translateY(-4px);
+}
+
+.service-card {
+  background: var(--service-schedule-bg);
+  border: 1px solid var(--service-schedule-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 42px -28px var(--service-schedule-shadow);
+  padding: clamp(1.15rem, 2.6vw, 1.6rem) clamp(1.25rem, 3vw, 1.9rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover,
+.service-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px -26px rgba(59, 39, 21, 0.24);
+}
+
+.service-card__date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 0.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.service-card__date {
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  color: var(--service-schedule-primary);
+}
+
+.service-card__weekday {
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  color: rgba(59, 39, 21, 0.72);
+}
+
+.service-card__memory {
+  font-size: 0.92rem;
+  color: var(--service-schedule-secondary);
+  background: rgba(255, 255, 255, 0.55);
+  border-left: 3px solid var(--service-schedule-border);
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.service-card__services {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.service-card__service {
+  display: flex;
+  gap: 0.65rem;
+  align-items: baseline;
+  color: var(--service-schedule-primary);
+  font-size: 0.95rem;
+}
+
+.service-card__time {
+  font-weight: 700;
+  min-width: 3.5rem;
+  letter-spacing: 0.04em;
+}
+
+.service-card__title {
+  font-weight: 500;
+}
+
+.service-card__empty {
+  color: var(--service-schedule-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.service-card__empty strong {
+  font-weight: 600;
+  color: var(--service-schedule-primary);
+}
+
+.service-schedule__nav {
+  position: static;
+  margin-top: clamp(1rem, 4vw, 1.75rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+.service-schedule__nav-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.service-schedule__nav-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--service-schedule-border);
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--service-schedule-primary);
+  font-size: 1.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.service-schedule__nav-button:hover,
+.service-schedule__nav-button:focus {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(217, 184, 142, 0.8);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.service-schedule__nav-button:disabled,
+.service-schedule__nav-button.swiper-button-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.service-schedule__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  color: #8c6b3d;
+  text-decoration: none;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.service-schedule__more:hover,
+.service-schedule__more:focus {
+  color: #a98147;
+  transform: translateX(4px);
+}
+
+.service-schedule__more-icon {
+  display: inline-flex;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--service-schedule-border);
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+
+.service-schedule__more:hover .service-schedule__more-icon,
+.service-schedule__more:focus .service-schedule__more-icon {
+  background: rgba(217, 184, 142, 0.15);
+  border-color: #a98147;
+}
+
+@media (min-width: 1024px) {
+  .service-schedule__more {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 1023px) {
+  .service-card {
+    border-radius: 14px;
+  }
+
+  .service-schedule__nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: clamp(0.75rem, 3.5vw, 1.2rem);
+  }
+
+  .service-schedule__nav-buttons {
+    order: 0;
+    align-self: flex-start;
+  }
+
+  .service-schedule__more {
+    order: 1;
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 767px) {
+  .service-schedule__inner {
+    padding: 0 clamp(0.75rem, 4vw, 1.25rem);
+  }
+
+  .service-card {
+    padding: 1.25rem;
+    gap: 1rem;
+    border-radius: 12px;
+  }
+
+  .service-schedule__nav {
+    width: 100%;
+    padding: 0;
+    gap: clamp(0.85rem, 5vw, 1.4rem);
+  }
+
+  .service-card__date-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .service-card__memory {
+    font-size: 0.9rem;
+  }
+
+  .service-card__services {
+    gap: 0.7rem;
+  }
+
+  .service-card__service {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .service-card__time {
+    min-width: auto;
+  }
+@media (prefers-reduced-motion: reduce) {
+  .service-schedule__swiper .swiper-slide,
+  .service-card,
+  .service-schedule__nav-button {
+    transition: none !important;
+    animation: none !important;
+  }
+}
