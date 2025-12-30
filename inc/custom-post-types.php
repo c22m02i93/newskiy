@@ -301,7 +301,7 @@ function bootscore_register_clergy_post_type() {
         'has_archive'  => true,
         'show_in_rest' => true,
         'rewrite'      => [
-            'slug'       => 'dukhovenstvo',
+            'slug'       => 'duhovenstvo',
             'with_front' => false,
         ],
         'menu_icon'    => 'dashicons-admin-users',
@@ -424,6 +424,18 @@ function bootscore_register_clergy_meta() {
     ];
 
     register_post_meta('clergy', 'clergy_number', $meta_args);
+
+    register_post_meta(
+        'clergy',
+        'clergy_description',
+        [
+            'type'              => 'string',
+            'single'            => true,
+            'show_in_rest'      => true,
+            'sanitize_callback' => 'sanitize_textarea_field',
+            'auth_callback'     => 'bootscore_service_meta_cap_check',
+        ]
+    );
 }
 
 add_action('init', 'bootscore_register_relic_meta');
@@ -487,6 +499,14 @@ function bootscore_clergy_add_meta_boxes() {
         'clergy',
         'side'
     );
+
+    add_meta_box(
+        'bootscore-clergy-description',
+        __('Описание священнослужителя', 'bootscore'),
+        'bootscore_clergy_description_metabox',
+        'clergy',
+        'normal'
+    );
 }
 
 add_action('add_meta_boxes', 'bootscore_relic_add_meta_boxes');
@@ -544,6 +564,25 @@ function bootscore_clergy_number_metabox($post) {
     <p>
         <label for="bootscore-clergy-number"><?php esc_html_e('Номер', 'bootscore'); ?></label>
         <input type="number" id="bootscore-clergy-number" name="bootscore_clergy_number" value="<?php echo esc_attr($number_value); ?>" class="widefat" min="0" step="1" />
+    </p>
+    <?php
+}
+
+/**
+ * Renders the духовенство description meta box.
+ *
+ * @param WP_Post $post Current post object.
+ *
+ * @return void
+ */
+function bootscore_clergy_description_metabox($post) {
+    wp_nonce_field('bootscore_clergy_description_nonce', 'bootscore_clergy_description_nonce_field');
+
+    $description_value = get_post_meta($post->ID, 'clergy_description', true);
+    ?>
+    <p>
+        <label for="bootscore-clergy-description"><?php esc_html_e('Описание', 'bootscore'); ?></label>
+        <textarea id="bootscore-clergy-description" name="bootscore_clergy_description" class="widefat" rows="4"><?php echo esc_textarea($description_value); ?></textarea>
     </p>
     <?php
 }
@@ -626,6 +665,13 @@ function bootscore_clergy_save_meta($post_id, $post) {
 
     if (isset($_POST['bootscore_clergy_number'])) {
         update_post_meta($post_id, 'clergy_number', absint($_POST['bootscore_clergy_number']));
+    }
+
+    if (isset($_POST['bootscore_clergy_description_nonce_field']) &&
+        wp_verify_nonce($_POST['bootscore_clergy_description_nonce_field'], 'bootscore_clergy_description_nonce') &&
+        isset($_POST['bootscore_clergy_description'])
+    ) {
+        update_post_meta($post_id, 'clergy_description', sanitize_textarea_field($_POST['bootscore_clergy_description']));
     }
 }
 
