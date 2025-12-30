@@ -284,6 +284,8 @@
   .service-card__time {
     min-width: auto;
   }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .service-schedule__swiper .swiper-slide,
   .service-card,
