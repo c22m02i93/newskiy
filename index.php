@@ -120,7 +120,7 @@ $slider_has_loop = count($slider_slides) > 1;
                       <div class="hram-hero-slider__content" data-swiper-parallax="-120">
                         <div class="hram-hero-slider__content-inner" data-parallax-scroll="16">
                           <div class="hram-hero-slider__actions">
-                            <a class="hram-button hram-hero-slider__button" href="#" role="button"><?= esc_html__('Житие Святого Благоверного Князя Александра Невского', 'bootscore'); ?></a>
+                            <a class="hram-button hram-hero-slider__button" href="#" role="button"><?= esc_html__('История строительства храма', 'bootscore'); ?></a>
                           </div>
                         </div>
                       </div>
@@ -186,7 +186,9 @@ $slider_has_loop = count($slider_slides) > 1;
           ]);
 
           if (!empty($service_schedule_block)) {
+            echo '<div class="hram-home-schedule">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $service_schedule_block; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
           }
           ?>
           <?php
