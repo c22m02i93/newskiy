@@ -3106,6 +3106,18 @@ a:active {
   background: transparent;
 }
 
+.hram-breadcrumb {
+  background: transparent;
+  width: min(100%, var(--hram-header-max-width));
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 3.2vw, 2rem);
+  box-sizing: border-box;
+}
+
+.hram-breadcrumb__list {
+  width: 100%;
+}
+
 @media (min-width: 992px) {
   .hram-header__top {
     margin-bottom: 0;
