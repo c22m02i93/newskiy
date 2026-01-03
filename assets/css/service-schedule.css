@@ -14,6 +14,16 @@
   background: none;
 }
 
+.home .hram-home-schedule {
+  margin-bottom: clamp(1rem, 3vw, 2rem);
+  padding-bottom: clamp(0.85rem, 2.4vw, 1.6rem);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.home .hram-home-schedule .service-schedule {
+  margin-bottom: 0;
+}
+
 .service-schedule__inner {
   width: min(100%, 1320px);
   margin: 0 auto;
