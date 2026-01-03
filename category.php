@@ -76,14 +76,13 @@ $slider_query = new WP_Query($slider_query_args);
 
                     <div class="front-news-card__content">
                       <?php
-                      $post_categories        = get_the_category();
-                      $post_primary_category = $post_categories ? $post_categories[0] : null;
+                      $card_category = hram_get_card_category(get_the_ID());
 
-                      if ($post_primary_category instanceof WP_Term) :
+                      if ($card_category instanceof WP_Term) :
                         ?>
                         <div class="front-news-card__category">
-                          <a class="front-news-card__category-link" href="<?= esc_url(get_category_link($post_primary_category->term_id)); ?>">
-                            <?= esc_html($post_primary_category->name); ?>
+                          <a class="front-news-card__category-link" href="<?= esc_url(get_category_link($card_category->term_id)); ?>">
+                            <?= esc_html($card_category->name); ?>
                           </a>
                         </div>
                       <?php endif; ?>

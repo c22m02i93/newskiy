@@ -110,6 +110,64 @@ function hram_disable_block_editor_for_posts($use_block_editor, $post_type) {
 }
 add_filter('use_block_editor_for_post_type', 'hram_disable_block_editor_for_posts', 10, 2);
 
+/**
+ * Get primary category for post cards.
+ */
+if (!function_exists('hram_get_card_category')) :
+  function hram_get_card_category($post_id = 0) {
+    $post_id = $post_id ? (int) $post_id : (int) get_the_ID();
+
+    if (!$post_id) {
+      return null;
+    }
+
+    if (is_category()) {
+      $queried_object = get_queried_object();
+
+      if ($queried_object instanceof WP_Term && 'category' === $queried_object->taxonomy) {
+        if (has_category($queried_object->term_id, $post_id)) {
+          return $queried_object;
+        }
+      }
+    }
+
+    if (class_exists('WPSEO_Primary_Term')) {
+      $primary_term    = new WPSEO_Primary_Term('category', $post_id);
+      $primary_term_id = $primary_term->get_primary_term();
+
+      if (!is_wp_error($primary_term_id) && $primary_term_id) {
+        $term = get_term($primary_term_id);
+
+        if ($term instanceof WP_Term) {
+          return $term;
+        }
+      }
+    }
+
+    $categories = get_the_category($post_id);
+
+    if (empty($categories)) {
+      return null;
+    }
+
+    $excluded_slugs = ['novosti', 'uncategorized'];
+
+    foreach ($categories as $category) {
+      if ($category instanceof WP_Term && !in_array($category->slug, $excluded_slugs, true)) {
+        return $category;
+      }
+    }
+
+    foreach ($categories as $category) {
+      if ($category instanceof WP_Term) {
+        return $category;
+      }
+    }
+
+    return null;
+  }
+endif;
+
 
 
 /**

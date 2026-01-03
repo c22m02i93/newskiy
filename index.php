@@ -256,14 +256,13 @@ $slider_has_loop = count($slider_slides) > 1;
 
                         <div class="front-news-card__content">
                           <?php
-                          $news_categories        = get_the_category();
-                          $news_primary_category = $news_categories ? $news_categories[0] : null;
+                          $card_category = hram_get_card_category(get_the_ID());
 
-                          if ($news_primary_category instanceof WP_Term) :
+                          if ($card_category instanceof WP_Term) :
                             ?>
                             <div class="front-news-card__category">
-                              <a class="front-news-card__category-link" href="<?= esc_url(get_category_link($news_primary_category->term_id)); ?>">
-                                <?= esc_html($news_primary_category->name); ?>
+                              <a class="front-news-card__category-link" href="<?= esc_url(get_category_link($card_category->term_id)); ?>">
+                                <?= esc_html($card_category->name); ?>
                               </a>
                             </div>
                           <?php endif; ?>
